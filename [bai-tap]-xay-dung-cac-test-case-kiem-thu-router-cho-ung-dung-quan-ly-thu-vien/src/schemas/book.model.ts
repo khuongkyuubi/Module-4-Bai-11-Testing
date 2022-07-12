@@ -2,7 +2,7 @@ import {Schema, model} from "mongoose";
 
 const {publisherSchema} = require("./publisher.model");
 const {categorySchema} = require("./category.model");
-import {keywordsSchema} from "./keyword.model"
+import {keywordsSchema} from "./keyword.model";
 
 
 const bookSchema = new Schema({

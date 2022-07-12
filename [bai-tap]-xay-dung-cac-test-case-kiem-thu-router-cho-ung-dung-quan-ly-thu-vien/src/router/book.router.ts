@@ -2,6 +2,8 @@ import {Router} from 'express';
 
 const bookRoutes = Router();
 import {bookModel} from "../schemas/book.model";
+import controller from "../controller/create.controller";
+
 import multer from 'multer';
 
 import {publisherSchema, publisherModel} from "../schemas/publisher.model";
@@ -15,48 +17,7 @@ bookRoutes.get('/create', (req, res) => {
     res.render("createBook");
 });
 
-bookRoutes.post('/create', upload.none(), async (req, res) => {
-    try {
-        // tạo 1 model publisher mới
-        const publisher = new publisherModel({
-            name: req.body.publisher
-        });
-
-        // tạo 1 model category mới
-        const category = new categoryModel({
-            type: req.body.category
-        });
-
-
-        // tạo mới một model keyword
-        const keyword = new keywordsModel({
-            keyword: req.body.keyword
-        })
-
-        console.log(keyword)
-        const newBook = new bookModel({
-            title: req.body.title,
-            author: req.body.author,
-            category: category._id,
-            publisher: publisher._id,
-            keywords: [keyword]
-        })
-        // lưu lần lượt các model
-        const p1 = publisher.save();
-        const p2 = category.save();
-        const p3 = newBook.save();
-        // sử dụng Promise.all() để khiến tất cả cùng thực thi, chỉ cần 1 cái lỗi sẽ báo lỗi ngay
-        const [publisherReturn, categoryReturn, book] = await Promise.all([p1, p2, p3])
-        if (book) {
-            res.render("success");
-        } else {
-            res.render("error");
-        }
-    } catch (err) {
-        console.log(err.message);
-        res.render("error");
-    }
-});
+bookRoutes.post('/create', upload.none(), controller.createBook);
 
 bookRoutes.post('/update/:id', upload.none(), async (req, res) => {
     try {
